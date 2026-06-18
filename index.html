@@ -1,4 +1,241 @@
----
-layout: home
-author_profile: true
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rodi Kirk</title>
+<meta name="description" content="Rodi Kirk — music & software. Selected work and a running notebook of sketches.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+  <header class="intro">
+    <h1>Rodi Kirk</h1>
+    <p class="lede">
+      I work at the intersection of <em>music</em> and <em>software</em> — building tools that
+      help people learn to play, and making music with collaborators around the world. Producer,
+      DJ, film scorer, and product person, by way of Auckland and Berlin.
+    </p>
+    <nav class="links">
+      <a href="mailto:rodi@melodics.com">email</a>
+      <a href="https://github.com/rodikirk">github</a>
+      <a href="https://open.spotify.com/artist/2YG4B2RvuXscF9PaqDGJhQ">music</a>
+      <a href="#work">work</a>
+      <a href="#listen">listen</a>
+      <a href="#sketches">sketches</a>
+    </nav>
+  </header>
+
+  <section id="work" class="work">
+    <h2>Selected work</h2>
+
+    <div class="filters" role="tablist" aria-label="filter work by category">
+      <button class="pill is-on" data-filter="all">all</button>
+      <button class="pill" data-filter="music">music</button>
+      <button class="pill" data-filter="education">education</button>
+      <button class="pill" data-filter="tech">tech</button>
+      <button class="pill" data-filter="dj">dj</button>
+      <button class="pill" data-filter="film">film</button>
+      <button class="pill" data-filter="writing">writing</button>
+    </div>
+
+    <ul class="projects">
+
+      <li class="project" data-cat="education tech music">
+        <div class="meta"><span class="year">Director of Product &amp; Education</span><span class="tag">education · tech · music</span></div>
+        <h3>Melodics</h3>
+        <p>
+          The app that's taught millions of people to play keys, pads, and drums — gamified,
+          adaptive lessons with real-time feedback. I lead product and education, shaping how
+          practice feels and how people actually get better. Recent work includes the lesson
+          collaboration with Ableton's Move.
+        </p>
+        <a class="visit" href="https://melodics.com">melodics.com →</a>
+      </li>
+
+      <li class="project" data-cat="tech music">
+        <div class="meta"><span class="year">2025 — now</span><span class="tag">tech · music</span></div>
+        <h3>Small music machines</h3>
+        <p>
+          Pocket-sized, browser-native music games — daily seeded puzzles everyone on earth
+          gets at once, built on a tiny shared engine. norns-inspired, touch &amp; MIDI first.
+        </p>
+        <a class="visit" href="https://music-games.rodi-kirk.workers.dev">play →</a>
+      </li>
+
+      <li class="project" data-cat="music">
+        <div class="meta"><span class="year">ongoing</span><span class="tag">music</span></div>
+        <h3>Aron Ottignon &amp; Rodi Kirk</h3>
+        <p>
+          A long-running partnership with the Paris-based pianist: Aron builds motifs at the
+          piano while I shape them live — real-time sampling, granular synthesis, Push, a Tempest,
+          and a custom Max for Live rig. The <em>Starfish</em> EP (with percussionist Samuel Dubois)
+          and the <em>Spaces</em> series, documented in the Funkhaus session <em>A Question of Balance</em>.
+        </p>
+        <a class="visit" href="https://aronottignon.bandcamp.com/album/spaces-1-castle">hear it →</a>
+      </li>
+
+      <li class="project" data-cat="music dj">
+        <div class="meta"><span class="year">remix</span><span class="tag">music · dj</span></div>
+        <h3>Again — remix</h3>
+        <p>
+          My rework of <em>Again</em> by Electric Wire Hustle — the band of old friend and
+          collaborator Mara TK. The remix was picked up for Motor City Drum Ensemble's hugely
+          successful <em>DJ-Kicks</em> compilation.
+        </p>
+        <a class="visit" href="https://daniloplessow.bandcamp.com/track/again-scratch-22-remix">hear it →</a>
+      </li>
+
+      <li class="project" data-cat="film music">
+        <div class="meta"><span class="year">Sundance 2016</span><span class="tag">film · music</span></div>
+        <h3>Tickled — score</h3>
+        <p>
+          Music for the documentary <em>Tickled</em>, which premiered at Sundance. Part of a body
+          of scoring and placement work that's appeared on HBO and Magnolia Pictures, and across
+          the Blue Note, Universal, and !K7 labels.
+        </p>
+      </li>
+
+      <li class="project" data-cat="education">
+        <div class="meta"><span class="year">dBs / Catalyst Berlin</span><span class="tag">education</span></div>
+        <h3>Teaching &amp; curriculum</h3>
+        <p>
+          As program lead at dBs Music Berlin (now Catalyst), I built courses in music technology
+          and creative production, and continue to tutor — the through-line behind everything I do
+          at Melodics.
+        </p>
+        <a class="visit" href="https://catalyst-berlin.com/stories/rodi-kirk">read the interview →</a>
+      </li>
+
+      <li class="project" data-cat="writing education">
+        <div class="meta"><span class="year">essays</span><span class="tag">writing · education</span></div>
+        <h3>Writing on practice</h3>
+        <p>
+          Essays for Ableton on the science of getting better — myelin, flow, and deliberate
+          practice — and on adapting a full band into a solo Push performance.
+        </p>
+        <a class="visit" href="https://www.ableton.com/en/blog/science-practice-new-ways-develop-your-musical-skills/">the science of practice →</a>
+      </li>
+
+      <li class="project" data-cat="music">
+        <div class="meta"><span class="year">2015</span><span class="tag">music</span></div>
+        <h3>Brother Sun (feat. Kimbra)</h3>
+        <p>
+          The Rodi Kirk &amp; Aron Ottignon version of Electric Wire Hustle's track with Kimbra —
+          a piano-driven, disco-leaning dancefloor cut featuring steel pan and bass from
+          ex-Jamiroquai Nick Fyfe. Out on Bastard Jazz, with an Ashley Beedle dub to follow.
+        </p>
+        <a class="visit" href="https://bastardjazz.bandcamp.com/track/brother-sun-ft-kimbra-rodi-kirk-aron-ottignon-version">hear it →</a>
+      </li>
+
+      <li class="project" data-cat="dj music">
+        <div class="meta"><span class="year">2002 — 2011</span><span class="tag">dj · music</span></div>
+        <h3>Scratch 22 <span class="legacy">(earlier work)</span></h3>
+        <p>
+          My earlier alias, retired around 2011 — a decade as a touring DJ and producer.
+          New Zealand Red Bull Thre3style champion, one-third of jazz-rap trio The Unseen, and
+          part of Auckland's ARC collective. Some older projects below are still credited this way.
+        </p>
+      </li>
+
+      <li class="project" data-cat="music">
+        <div class="meta"><span class="year">album · 2011</span><span class="tag">music</span></div>
+        <h3>Distance From View</h3>
+        <p>
+          A cohesive instrumental hip-hop album, built to be heard end to end — out of years of
+          beatmaking, including work with Auckland rapper Tourettes. (Released as Scratch 22.)
+        </p>
+        <a class="visit" href="https://distancefromview.bandcamp.com/album/distance-from-view">hear it →</a>
+      </li>
+
+      <li class="project" data-cat="dj music">
+        <div class="meta"><span class="year">archive</span><span class="tag">radio · dj · mixes</span></div>
+        <h3>Radio, DJ sets &amp; mixtapes</h3>
+        <p>
+          A back catalogue of mixtapes and remixes, plus <em>Float Some Jet Some</em> — the
+          Berlin Community Radio show I ran with my friend Kava.
+        </p>
+        <a class="visit" href="https://soundcloud.com/scratch22">mixes &amp; remixes →</a>
+        <a class="visit" href="https://www.mixcloud.com/BCR_Radio/playlists/float-some-jet-some/">bcr radio →</a>
+      </li>
+
+    </ul>
+  </section>
+
+  <section id="listen" class="media">
+    <h2>Watch &amp; listen</h2>
+
+    <figure class="embed">
+      <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/Uzr0-4ak1sc" title="Rodi Kirk — Underwater (Push performance)" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <figcaption><strong>Underwater</strong> — a dubbed-out solo performance on Ableton Push with a Space Echo and Juno-106, in Berlin.</figcaption>
+    </figure>
+
+    <figure class="embed">
+      <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/Tj5hZ0NdsjA" title="Aron Ottignon — A Question of Balance" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <figcaption><strong>A Question of Balance</strong> — the Aron Ottignon trio at Berlin's Funkhaus, translating the studio to the stage.</figcaption>
+    </figure>
+
+    <figure class="embed">
+      <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/X1xkRXHVi8M" title="Aron Ottignon — Live Recording Session" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+      <figcaption><strong>Live Recording Session</strong> — Aron Ottignon, captured live.</figcaption>
+    </figure>
+
+    <figure class="embed">
+      <iframe class="spotify" src="https://open.spotify.com/embed/playlist/48dxyJJh9hsffWmd1kflt7?utm_source=generator" width="100%" height="380" frameborder="0" allowfullscreen allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <figcaption>A handful of favourites — the <em>again</em> remix, <em>Brother Sun</em>, and more.</figcaption>
+    </figure>
+  </section>
+
+  <section id="sketches" class="sketches">
+    <div class="sketches-head">
+      <h2>Sketches</h2>
+      <p class="note">a running notebook — newest first</p>
+    </div>
+    <ul class="feed">
+
+      <li class="sketch">
+        <span class="date">2026 · 06 · 18</span>
+        <div class="body">
+          <h3>Started this site</h3>
+          <p>A home for the work and a place to drop new experiments as they happen.</p>
+        </div>
+      </li>
+
+      <li class="sketch">
+        <span class="date">date</span>
+        <div class="body">
+          <h3>Sketch title</h3>
+          <p><span class="todo">[ a sentence about a quick thing you made — link it if it's live ]</span></p>
+        </div>
+      </li>
+
+    </ul>
+  </section>
+
+  <footer>
+    <p>Rodi Kirk · <a href="mailto:rodi@melodics.com">rodi@melodics.com</a> · <a href="https://github.com/rodikirk">github</a></p>
+  </footer>
+
+</main>
+<script>
+  (function () {
+    var pills = document.querySelectorAll('.pill');
+    var projects = document.querySelectorAll('.project');
+    pills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        var f = pill.dataset.filter;
+        pills.forEach(function (p) { p.classList.toggle('is-on', p === pill); });
+        projects.forEach(function (proj) {
+          var show = f === 'all' || (' ' + proj.dataset.cat + ' ').indexOf(' ' + f + ' ') > -1;
+          proj.hidden = !show;
+        });
+      });
+    });
+  })();
+</script>
+</body>
+</html>
