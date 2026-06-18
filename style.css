@@ -72,6 +72,15 @@ main {
 }
 .links a:hover { color: var(--accent); border-color: var(--accent); }
 
+.hero {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin-top: 2rem;
+  border-radius: 6px;
+}
+
 /* --- section headings --- */
 section { margin-top: 4.5rem; }
 
@@ -119,6 +128,16 @@ h2 {
 .project[hidden] { display: none; }
 
 .project { margin-bottom: 2.75rem; }
+.project.has-thumb { display: flex; gap: 1.25rem; align-items: flex-start; }
+.project-body { flex: 1; min-width: 0; }
+.thumb {
+  flex: 0 0 auto;
+  width: 116px;
+  height: 116px;
+  object-fit: cover;
+  border-radius: 4px;
+  order: 2;
+}
 .project .meta {
   display: flex;
   gap: 1rem;
@@ -217,6 +236,7 @@ footer a:hover { color: var(--accent); }
   .intro h1 { font-size: 2.1rem; }
   .sketch { flex-direction: column; gap: 0.3rem; }
   .sketch .date { padding-top: 0; }
+  .thumb { width: 88px; height: 88px; }
 }
 
 /* ============================================================
