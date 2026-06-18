@@ -75,7 +75,7 @@ main {
 .hero {
   display: block;
   width: 100%;
-  max-width: 22rem;
+  max-width: 17rem;
   height: auto;
   margin-top: 2rem;
   border-radius: 6px;
@@ -132,8 +132,8 @@ h2 {
 .project-body { flex: 1; min-width: 0; }
 .thumb {
   flex: 0 0 auto;
-  width: 60px;
-  height: 60px;
+  width: 150px;
+  height: 150px;
   object-fit: cover;
   border-radius: 4px;
   order: 2;
@@ -236,7 +236,7 @@ footer a:hover { color: var(--accent); }
   .intro h1 { font-size: 2.1rem; }
   .sketch { flex-direction: column; gap: 0.3rem; }
   .sketch .date { padding-top: 0; }
-  .thumb { width: 52px; height: 52px; }
+  .thumb { width: 120px; height: 120px; }
 }
 
 /* ============================================================
