@@ -218,3 +218,61 @@ footer a:hover { color: var(--accent); }
   .sketch { flex-direction: column; gap: 0.3rem; }
   .sketch .date { padding-top: 0; }
 }
+
+/* ============================================================
+   project pages — a project lives at /<slug>/index.html and
+   links back to this stylesheet via ../style.css
+   ============================================================ */
+.back {
+  display: inline-block;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.75rem;
+  color: var(--dim);
+  text-decoration: none;
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.02em;
+}
+.back:hover { color: var(--accent); }
+
+.project-hero { margin-bottom: 2.5rem; }
+.project-hero .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--dim);
+  margin-bottom: 0.6rem;
+}
+.project-hero h1 {
+  font-size: 2.2rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+}
+.project-hero .summary {
+  font-size: 1.2rem;
+  color: var(--fg);
+  margin: 0;
+  max-width: 34rem;
+}
+
+/* body content of a project page */
+.prose h2 {
+  /* override the mono section-label style with a readable serif heading */
+  font-family: "Newsreader", Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--fg);
+  border: none;
+  padding: 0;
+  margin: 2.5rem 0 0.75rem;
+}
+.prose p { margin: 0 0 1.1rem; }
+.prose a { color: var(--accent); }
+.prose img { width: 100%; border-radius: 4px; display: block; margin: 1.5rem 0; }
+.prose figcaption { margin-top: -0.75rem; margin-bottom: 1.5rem; }
