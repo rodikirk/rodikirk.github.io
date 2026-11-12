@@ -121,6 +121,7 @@ window.addEventListener("keydown", () => Audio.unlock(), { capture: true });
 // The "set": a slow rolling strip of homepage variants along the bottom, like a DJ's running order.
 const SET = [
   { id: "strings", label: "strings", href: "index.html" },
+  { id: "rings", label: "rings", href: "rings.html" },
   { id: "keys", label: "keys", href: "keys.html" },
   { id: "bounce", label: "bounce", href: "bounce.html" },
   { id: "more", label: "more sketches", href: "sketches.html" },

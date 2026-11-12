@@ -13,7 +13,7 @@ const floorY = () => height - 34; // the set bar is the floor's edge
 function setup() {
   const c = createCanvas(windowWidth, windowHeight);
   c.elt.setAttribute("aria-hidden", "true");
-  chrome("bounce", { hint: "throw the ball · space throws it for you" });
+  chrome("bounce", { hint: null });
   bio = bioHeader();
   ball = { x: width / 2, y: height * 0.55, r: max(22, S() * 0.035), squash: 0, sv: 0, normal: 0 };
 }

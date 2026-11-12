@@ -9,7 +9,7 @@ const SHAPES = ["ring", "burst", "wipe", "spin", "strike", "dots", "petal"];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  chrome("keys", { hint: "type, or tap the screen · sound on" });
+  chrome("keys", { hint: null });
   bio = bioHeader();
   textFont("IBM Plex Mono");
 }
