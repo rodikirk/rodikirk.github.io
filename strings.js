@@ -11,9 +11,9 @@ const TUNING = [329.63, 174.61, 110.0, 73.42];
 function setup() {
   const c = createCanvas(windowWidth, windowHeight);
   c.elt.setAttribute("aria-hidden", "true");
-  chrome("strings", { hint: "strum the strings · tap a word to go there" });
+  chrome("strings", { hint: null }); // no instructions: the top string shows you (see hintPluck)
   // Fonts must be loaded before glyphs are measured.
-  document.fonts.ready.then(() => { build(); ready = true; document.body.classList.add("live"); });
+  document.fonts.ready.then(() => { build(); ready = true; document.body.classList.add("live"); scheduleHints(); });
 }
 function windowResized() { resizeCanvas(windowWidth, windowHeight); if (ready) build(); }
 
@@ -90,16 +90,38 @@ function uAt(s, x) {
   return s.u[k] * (1 - fr) + (s.u[min(SEG, k + 1)] || 0) * fr;
 }
 
+// Hint by doing, not telling. The top string plucks itself and shimmers once after load (silently:
+// browsers block sound until the first tap), once more if nobody has touched the page after a while,
+// and audibly on a first tap that didn't land on a string, so that tap makes a sound.
+let engaged = false;
+const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function hintPluck(audible) {
+  const s = strings[0]; if (!s) return;
+  if (!calm) for (let i = 1; i < SEG; i++) { const p = i / SEG, t = 0.32; s.v[i] += 2.2 * (p < t ? p / t : (1 - p) / (1 - t)); }
+  s.shimmer = 1;
+  if (audible) Audio.pluck(s.freq, 0.3, 0.6, 0.45);
+}
+function scheduleHints() {
+  setTimeout(() => { if (!engaged) hintPluck(false); }, 900);
+  setTimeout(() => { if (!engaged) hintPluck(false); }, 9000);
+}
+window.addEventListener("keydown", () => (engaged = true));
+
 function drawString(s) {
-  const a = x0(), b = x1(), segW = (b - a) / SEG, lit = s.hover ? 0.35 : 0;
+  s.shimmer = (s.shimmer || 0) * 0.978;
+  const sh = s.shimmer > 0.01 ? s.shimmer : 0;
+  const a = x0(), b = x1(), segW = (b - a) / SEG, lit = (s.hover ? 0.35 : 0) + sh * 0.6 * (0.5 + 0.5 * Math.sin(millis() / 60));
   // The string (canvas).
   noFill(); stroke(theme().fg); strokeWeight(1 + (s.glow + lit) * 1.5); drawingContext.globalAlpha = 0.45 + min(0.55, (s.glow + lit) * 0.5);
   beginShape(); for (let i = 0; i <= SEG; i++) vertex(a + i * segW, s.y + s.u[i]); endShape();
   drawingContext.globalAlpha = 1;
   // The words (HTML), riding just above the string.
   const gap = s.name ? 10 : 7, scale = 1 + s.glow * 0.08;
-  let x = (a + b) / 2 - s.tw / 2;
+  let x = (a + b) / 2 - s.tw / 2, gi = 0;
   for (const g of s.glyphs) {
+    // shimmer: a soft band of light running along the word
+    g.el.style.opacity = sh ? (1 - sh * 0.55 * (0.5 + 0.5 * Math.sin(millis() / 110 - gi * 0.7))).toFixed(3) : "";
+    gi++;
     const cx = x + g.w / 2, slope = (uAt(s, cx + 2) - uAt(s, cx - 2)) / 4;
     const y = s.y + uAt(s, cx) - gap - g.h;
     g.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) rotate(${atan(slope).toFixed(3)}rad) scale(${scale.toFixed(3)})`;
@@ -134,9 +156,11 @@ window.addEventListener("pointerdown", (e) => {
   if (onChrome(e)) return;
   ptr = { x: e.clientX, y: e.clientY, down: true };
   prev = { x: ptr.x, y: ptr.y }; downAt = { x: ptr.x, y: ptr.y }; moved = false;
+  const first = !engaged; engaged = true;
   for (const s of strings) {
     if (ptr.y > s.y - (s.name ? 64 : 40) && ptr.y < s.y + 12 && ptr.x > x0() && ptr.x < x1()) { held = { s, y0: ptr.y }; return; }
   }
+  if (first) setTimeout(() => hintPluck(true), 40); // first tap missed the strings: answer it with the top string
 });
 
 window.addEventListener("pointermove", (e) => {
