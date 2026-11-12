@@ -20,24 +20,57 @@ function scaleFreq(step, base = 146.83) { // D3
 }
 
 // ---------- audio ----------
+// Browsers only start sound from a gesture: on desktop the mouse press counts, on phones only the
+// finger lifting does. So the first strum on a phone happens before audio may run. Notes asked for in
+// that gap are kept and replayed, with their rhythm, the moment audio starts: the first gesture still
+// sounds, just a beat late on phones.
+const WHEN_ARG = { bell: 4, kick: 1, hat: 2, clap: 1, pluck: 4 };
 const Audio = {
-  ctx: null, out: null, send: null,
+  ctx: null, out: null, send: null, _missed: [],
+  muted: (() => { try { return localStorage.getItem("rk-muted") === "1"; } catch (e) { return false; } })(),
+  get running() { return !!this.ctx && this.ctx.state === "running"; },
+  get on() { return this.running && !this.muted; },
   unlock() {
-    if (this.ctx) { if (this.ctx.state !== "running") this.ctx.resume(); return this.ctx; }
-    const ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "interactive" });
-    this.ctx = ctx;
-    const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -14; comp.ratio.value = 4;
-    this.out = ctx.createGain(); this.out.gain.value = 0.8;
-    this.out.connect(comp).connect(ctx.destination);
-    // Dotted-eighth-ish feedback delay with a darkening filter, as a space send.
-    const d = ctx.createDelay(1); d.delayTime.value = 0.33;
-    const fb = ctx.createGain(); fb.gain.value = 0.38;
-    const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2200;
-    this.send = ctx.createGain(); this.send.gain.value = 0.35;
-    this.send.connect(d); d.connect(lp).connect(fb).connect(d); lp.connect(this.out);
-    document.getElementById("hint")?.remove();
-    return ctx;
+    if (!this.ctx) {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)({ latencyHint: "interactive" });
+      this.ctx = ctx;
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -14; comp.ratio.value = 4;
+      this.out = ctx.createGain(); this.out.gain.value = this.muted ? 0 : 0.8;
+      this.out.connect(comp).connect(ctx.destination);
+      // Dotted-eighth-ish feedback delay with a darkening filter, as a space send.
+      const d = ctx.createDelay(1); d.delayTime.value = 0.33;
+      const fb = ctx.createGain(); fb.gain.value = 0.38;
+      const lp = ctx.createBiquadFilter(); lp.type = "lowpass"; lp.frequency.value = 2200;
+      this.send = ctx.createGain(); this.send.gain.value = 0.35;
+      this.send.connect(d); d.connect(lp).connect(fb).connect(d); lp.connect(this.out);
+      ctx.addEventListener("statechange", () => this._started());
+      document.getElementById("hint")?.remove();
+    }
+    if (this.ctx.state !== "running") this.ctx.resume().then(() => this._started()).catch(() => {});
+    else this._started();
+    return this.ctx;
+  },
+  _started() { if (this.running) this._replay(); soundSwitch.update(); },
+  setMuted(m) {
+    this.muted = m; try { localStorage.setItem("rk-muted", m ? "1" : "0"); } catch (e) {}
+    if (this.out) this.out.gain.setTargetAtTime(m ? 0 : 0.8, this.ctx.currentTime, 0.02);
+    soundSwitch.update();
+  },
+  // Returns true if the voice must not play now. Immediate notes are kept for _replay.
+  _gate(name, args) {
+    if (this.running) return false;
+    if (args[WHEN_ARG[name]] === undefined) { this._missed.push({ name, args: [...args], t: performance.now() }); if (this._missed.length > 8) this._missed.shift(); }
+    return true;
+  },
+  _replay() {
+    const t = performance.now(), recent = this._missed.filter((m) => t - m.t < 1500); this._missed = [];
+    if (!recent.length || this.muted) return;
+    const t0 = recent[0].t, span = Math.max(1, recent[recent.length - 1].t - t0), squeeze = Math.min(1, 400 / span);
+    for (const m of recent) {
+      const a = m.args.slice(); a[WHEN_ARG[m.name]] = this.ctx.currentTime + 0.02 + ((m.t - t0) * squeeze) / 1000;
+      this[m.name](...a);
+    }
   },
   now() { return this.ctx.currentTime; },
   dest(wet = 0.3) {
@@ -53,7 +86,7 @@ const Audio = {
   },
   // Soft mallet/bell tone: sine + quiet 2.76x partial.
   bell(freq, vel = 0.6, dur = 1.2, wet = 0.35, when) {
-    if (!this.ctx) return; const t = Math.max(this.now(), when || 0), out = this.dest(wet);
+    if (!this.ctx || this._gate("bell", arguments)) return; const t = Math.max(this.now(), when || 0), out = this.dest(wet);
     [[1, 1], [2.76, 0.18], [5.4, 0.05]].forEach(([r, a]) => {
       const o = this.ctx.createOscillator(), g = this.ctx.createGain();
       o.frequency.value = freq * r; o.type = "sine";
@@ -63,14 +96,14 @@ const Audio = {
     });
   },
   kick(vel = 0.9, when) {
-    if (!this.ctx) return; const t = Math.max(this.now(), when || 0), out = this.dest(0.05);
+    if (!this.ctx || this._gate("kick", arguments)) return; const t = Math.max(this.now(), when || 0), out = this.dest(0.05);
     const o = this.ctx.createOscillator(), g = this.ctx.createGain();
     o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.12);
     g.gain.setValueAtTime(vel, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
     o.connect(g).connect(out); o.start(t); o.stop(t + 0.5);
   },
   hat(vel = 0.4, open = false, when) {
-    if (!this.ctx) return; const t = Math.max(this.now(), when || 0), out = this.dest(0.15);
+    if (!this.ctx || this._gate("hat", arguments)) return; const t = Math.max(this.now(), when || 0), out = this.dest(0.15);
     const n = this.ctx.createBufferSource(); n.buffer = this.noise();
     const hp = this.ctx.createBiquadFilter(); hp.type = "highpass"; hp.frequency.value = 7000;
     const g = this.ctx.createGain(); const len = open ? 0.35 : 0.06;
@@ -78,7 +111,7 @@ const Audio = {
     n.connect(hp).connect(g).connect(out); n.start(t); n.stop(t + len + 0.02);
   },
   clap(vel = 0.6, when) {
-    if (!this.ctx) return; const t = Math.max(this.now(), when || 0), out = this.dest(0.4);
+    if (!this.ctx || this._gate("clap", arguments)) return; const t = Math.max(this.now(), when || 0), out = this.dest(0.4);
     const n = this.ctx.createBufferSource(); n.buffer = this.noise();
     const bp = this.ctx.createBiquadFilter(); bp.type = "bandpass"; bp.frequency.value = 1400; bp.Q.value = 0.8;
     const g = this.ctx.createGain(); g.gain.setValueAtTime(0, t);
@@ -89,7 +122,7 @@ const Audio = {
   // Karplus-Strong pluck, rendered once per (freq, brightness) and cached.
   _plucks: new Map(),
   pluck(freq, vel = 0.7, bright = 0.5, wet = 0.3, when) {
-    if (!this.ctx) return;
+    if (!this.ctx || this._gate("pluck", arguments)) return;
     const key = Math.round(freq) + ":" + bright.toFixed(1);
     let buf = this._plucks.get(key);
     if (!buf) {
@@ -114,9 +147,29 @@ const Audio = {
   },
 };
 
-// Unlock audio on first touch anywhere; show a small hint until then.
-window.addEventListener("pointerdown", () => Audio.unlock(), { capture: true });
-window.addEventListener("keydown", () => Audio.unlock(), { capture: true });
+// Start audio from any gesture the browser accepts: mouse press, finger lift, key press.
+for (const type of ["pointerdown", "pointerup", "touchend", "keydown"]) window.addEventListener(type, () => Audio.unlock(), { capture: true });
+// iPhone: treat the page as media playback, so the silent switch doesn't mute it (Safari 17+).
+try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (e) {}
+
+// Sound switch at the end of the set bar: says the site makes sound, shows whether it's on, mutes.
+const soundSwitch = {
+  el: null, shownOn: false,
+  mount(parent) {
+    const b = document.createElement("button"); b.type = "button"; b.className = "sound";
+    b.addEventListener("click", () => {
+      if (this.shownOn) Audio.setMuted(true);
+      else { Audio.unlock(); Audio.setMuted(false); }
+    });
+    parent.appendChild(b); this.el = b; this.update();
+  },
+  update() {
+    if (!this.el) return;
+    this.shownOn = Audio.on;
+    this.el.textContent = this.shownOn ? "● sound on" : "○ sound off";
+    this.el.setAttribute("aria-pressed", String(this.shownOn));
+  },
+};
 
 // The "set": a slow rolling strip of homepage variants along the bottom, like a DJ's running order.
 const SET = [
@@ -134,6 +187,7 @@ function chrome(name, { hint = "tap anywhere for sound" } = {}) {
   // Two copies so the CSS loop is seamless; the second is hidden from screen readers.
   set.innerHTML = `<div class="roll"><div>${items}<span>·</span></div><div aria-hidden="true">${items.replaceAll("<a ", '<a tabindex="-1" ')}<span>·</span></div></div>`;
   document.body.appendChild(set);
+  soundSwitch.mount(set);
   if (hint) { const h = document.createElement("div"); h.id = "hint"; h.textContent = hint; document.body.appendChild(h); }
   window.addEventListener("keydown", (e) => {
     if (e.target.closest && e.target.closest("input, textarea")) return;
