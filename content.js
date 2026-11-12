@@ -99,17 +99,6 @@ window.SITE_CONTENT = {
           }
         },
         {
-          "thumb": "machines.jpg",
-          "alt": "Screenshot of Small music machines",
-          "title": "Small music machines",
-          "role": "web · browser games",
-          "body": "Pocket-sized music games that run in the browser. Daily seeded puzzles on a tiny shared engine.",
-          "link": {
-            "label": "play →",
-            "href": "https://music-games.rodi-kirk.workers.dev"
-          }
-        },
-        {
           "thumb": "keys.jpg",
           "alt": "Flat coloured shapes from the keys sketch",
           "title": "keys",
@@ -118,6 +107,17 @@ window.SITE_CONTENT = {
           "link": {
             "label": "play →",
             "href": "../keys.html"
+          }
+        },
+        {
+          "thumb": "machines.jpg",
+          "alt": "Screenshot of Small music machines",
+          "title": "Small music machines",
+          "role": "web · browser games",
+          "body": "Pocket-sized music games that run in the browser. Daily seeded puzzles on a tiny shared engine.",
+          "link": {
+            "label": "play →",
+            "href": "https://music-games.rodi-kirk.workers.dev"
           }
         }
       ]

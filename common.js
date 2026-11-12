@@ -9,23 +9,7 @@ const SECTIONS = [
   { word: "design", href: "design/" },
 ];
 
-// Warm, saturated themes. Each bounce/hit steps to the next.
-const THEMES = [
-  { bg: "#1a1916", fg: "#faf8f4" },
-  { bg: "#b4452e", fg: "#faf8f4" },
-  { bg: "#e8b23a", fg: "#1a1916" },
-  { bg: "#2f5d50", fg: "#faf8f4" },
-  { bg: "#2a3fd1", fg: "#faf8f4" },
-  { bg: "#f2a7c3", fg: "#2a0d18" },
-  { bg: "#faf8f4", fg: "#1a1916" },
-];
-let themeIndex = 0;
-const theme = () => THEMES[themeIndex];
-function nextTheme() {
-  themeIndex = (themeIndex + 1) % THEMES.length;
-  document.body.style.background = theme().bg;
-  document.body.style.color = theme().fg;
-}
+// Palette, theme(), nextTheme() live in theme.js (loaded first on every page).
 
 // D minor pentatonic across a few octaves.
 const SCALE = [0, 3, 5, 7, 10];
@@ -142,8 +126,6 @@ const SET = [
   { id: "more", label: "more sketches", href: "sketches.html" },
 ];
 function chrome(name, { hint = "tap anywhere for sound" } = {}) {
-  document.body.style.background = theme().bg;
-  document.body.style.color = theme().fg;
   const set = document.createElement("nav");
   set.className = "set"; set.setAttribute("aria-label", "homepage variants");
   const items = SET.map((v, i) =>

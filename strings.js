@@ -2,6 +2,9 @@
 // that ride four tuned strings. Strum across them; tap a word to go there; grab and pull to bend.
 const SEG = 60;
 let strings = [], prev = null, held = null, downAt = null, moved = false, ready = false;
+// Colour rule: each gesture that plays the strings (a strum, a tap, a bend) steps to the next colour once,
+// when you let go. Hover plucks and keyboard focus never change it.
+let played = false;
 // Dm9 voicing, top string highest: E4 F3 A2 D2.
 const TUNING = [329.63, 174.61, 110.0, 73.42];
 
@@ -112,7 +115,7 @@ function pluck(s, t, strength, dir, vel) {
   s.glow = 1;
   // Plucking near the middle is darker, near the ends brighter.
   Audio.pluck(s.freq, vel ?? constrain(strength / 40, 0.25, 1), round(map(abs(t - 0.5), 0, 0.5, 0.3, 1) * 10) / 10);
-  if (random() < 0.15) nextTheme();
+  if (ptr.down) played = true;
 }
 
 function crossings(px, py, qx, qy, strength, vel) {
@@ -154,10 +157,11 @@ function release() {
     const s = held.s, pull = abs(held.pull || 0);
     s.glow = 1;
     if (!moved) pluck(s, held.t ?? 0.5, 30, 1); // a tap plucks; if it was a link, the click handler then navigates
-    else if (pull > 4) { Audio.pluck(s.freq, constrain(pull / 70, 0.25, 1), round(map(abs(held.t - 0.5), 0, 0.5, 0.3, 1) * 10) / 10); nextTheme(); }
+    else if (pull > 4) { Audio.pluck(s.freq, constrain(pull / 70, 0.25, 1), round(map(abs(held.t - 0.5), 0, 0.5, 0.3, 1) * 10) / 10); played = true; }
     held = null;
   }
-  ptr.down = false; prev = null; downAt = null;
+  if (played) nextTheme();
+  played = false; ptr.down = false; prev = null; downAt = null;
 }
 window.addEventListener("pointerup", release);
 window.addEventListener("pointercancel", release);
