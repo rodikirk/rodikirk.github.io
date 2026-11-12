@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>edit · rodi kirk sub pages</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sub.css">
+<style>
+  /* Editor chrome only. Everything else is the real sub.css, so what you see is what ships. */
+  body { padding-top: 52px; }
+  .bar { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+    padding: 10px 16px; background: #e8b23a; color: #1a1916; font: 400 12px/1.3 "IBM Plex Mono", monospace; }
+  .bar b { font-weight: 400; margin-right: auto; }
+  .bar button { font: inherit; color: inherit; background: none; border: 1px solid currentColor; border-radius: 2px; padding: 4px 9px; cursor: pointer; }
+  .bar button:hover { background: #1a1916; color: #e8b23a; }
+  .bar .status { opacity: .75; }
+  .crumbs a[data-page] { cursor: pointer; }
+  [contenteditable] { outline: none; border-radius: 2px; transition: box-shadow 120ms; }
+  body:not(.preview) [contenteditable]:hover { box-shadow: 0 0 0 1px #4a473e; }
+  body:not(.preview) [contenteditable]:focus { box-shadow: 0 0 0 1px #e8b23a; }
+  body:not(.preview) .changed { box-shadow: inset 2px 0 0 #e8b23a; padding-left: 6px; }
+  .field-note { display: block; font: 400 11px/1.4 "IBM Plex Mono", monospace; color: var(--dim); margin: 4px 0 0; }
+  .field-note.over { color: #e8b23a; }
+  .href, .alt { display: block; width: 100%; margin-top: 6px; padding: 4px 6px; font: 400 11px/1.4 "IBM Plex Mono", monospace;
+    color: var(--dim); background: transparent; border: 1px dashed #3a372f; border-radius: 2px; }
+  .href:focus, .alt:focus { outline: none; border-color: #e8b23a; color: var(--fg); }
+  .alt { margin-top: 8px; width: 128px; }
+  .desc { margin: -1.5rem 0 2.5rem; padding: 10px 12px; border: 1px dashed #3a372f; border-radius: 2px; }
+  .desc .field-note:first-child { margin: 0 0 4px; }
+  .desc [contenteditable] { font: 400 14px/1.5 "IBM Plex Mono", monospace; color: var(--dim); }
+  .preview .href, .preview .alt, .preview .desc, .preview .field-note { display: none; }
+  .go[contenteditable] { display: inline-block; }
+  .toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: #faf8f4; color: #1a1916; padding: 8px 14px;
+    font: 400 12px "IBM Plex Mono", monospace; border-radius: 2px; opacity: 0; transition: opacity 200ms; pointer-events: none; z-index: 11; }
+  .toast.on { opacity: 1; }
+  @media (max-width: 560px) {
+    body { padding-top: 0; } .bar { position: sticky; } .bar b { display: none; } .alt { width: 84px; }
+    .item .body > :not(.head) { grid-column: 1 / -1; }
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <b>editing sub pages · click any text to change it · ⌘I for italics · saves in this browser</b>
+  <span class="status" id="status"></span>
+  <button id="preview">preview</button>
+  <button id="copy">copy json</button>
+  <button id="export">export json</button>
+  <button id="import">import</button>
+  <button id="reset">reset</button>
+  <input type="file" id="file" accept="application/json,.json" hidden>
+</div>
+<main id="page"></main>
+<div class="toast" id="toast"></div>
+
+<script src="content.js"></script>
+<script>
+const KEY = "rk-subpages-edit-v1";
+const ORIGINAL = JSON.parse(JSON.stringify(window.SITE_CONTENT));
+let data = load();
+let current = location.hash.slice(1) in data.pages ? location.hash.slice(1) : Object.keys(data.pages)[0];
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+const BODY_SOFT_MAX = 220, ROLE_SOFT_MAX = 48;
+
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.pages) return s; } catch (e) {}
+  return JSON.parse(JSON.stringify(ORIGINAL));
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(data)); status(); }
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 1800); }
+
+// Path helpers: "music.lede", "music.items.0.link.href"
+const get = (obj, path) => path.split(".").reduce((o, k) => (o == null ? o : o[k]), obj);
+function set(obj, path, val) { const ks = path.split("."), last = ks.pop(); ks.reduce((o, k) => o[k], obj)[last] = val; }
+
+function countChanges() {
+  let n = 0;
+  const walk = (a, b) => { if (typeof a !== "object" || a === null) { if (a !== b) n++; return; } for (const k in a) walk(a[k], b ? b[k] : undefined); };
+  walk(data, ORIGINAL); return n;
+}
+function status() { const n = countChanges(); $("#status").textContent = n ? `${n} change${n > 1 ? "s" : ""}` : "no changes"; }
+
+// Body text keeps <em> only; everything else becomes plain text. Stored with a raw "&" (the build escapes it).
+function cleanRich(html) {
+  const d = document.createElement("div"); d.innerHTML = html;
+  const out = [];
+  (function walk(n) {
+    for (const c of n.childNodes) {
+      if (c.nodeType === 3) out.push(c.textContent.replace(/</g, "&lt;"));
+      else if (/^(EM|I)$/.test(c.tagName)) { out.push("<em>"); walk(c); out.push("</em>"); }
+      else if (c.tagName === "BR") out.push(" ");
+      else walk(c);
+    }
+  })(d);
+  return out.join("").replace(/\u00a0/g, " ").replace(/<em>(\s*)<\/em>/g, "$1").replace(/<\/em><em>/g, "").replace(/\s+/g, " ").trim();
+}
+const plainLen = (html) => html.replace(/<\/?em>/g, "").length;
+
+function render() {
+  const p = data.pages[current], names = Object.keys(data.pages);
+  location.hash = current;
+  document.title = `edit · ${current}`;
+  const ed = (path, tag, cls = "", rich = false) => {
+    const v = get(data.pages, path);
+    const changed = v !== get(ORIGINAL.pages, path) ? " changed" : "";
+    return `<${tag} class="${cls}${changed}" contenteditable="true" spellcheck="true" data-path="${path}"${rich ? ' data-rich="1"' : ""}>${rich ? v : esc(v)}</${tag}>`;
+  };
+  $("#page").innerHTML = `
+    <nav class="crumbs" aria-label="sections"><span class="home" style="font:400 28px/1 Newsreader,Georgia,serif;margin-right:10px">rodi kirk</span>
+      ${names.map((s) => `<a data-page="${s}"${s === current ? ' aria-current="page"' : ""}>${s}</a>`).join(" ")}</nav>
+    <h1>${esc(current)}</h1>
+    ${ed(`${current}.lede`, "p", "lede", true)}
+    <div class="desc"><span class="field-note">search description (meta, not shown on the page)</span>${ed(`${current}.description`, "div")}<span class="field-note" data-count="${current}.description"></span></div>
+    <ul class="work">${p.items.map((it, i) => {
+      const b = `${current}.items.${i}`;
+      return `<li class="item">
+        <div><img src="assets/thumbs/${esc(it.thumb)}" alt="${esc(it.alt)}" width="128" height="128">
+          <input class="alt${it.alt !== get(ORIGINAL.pages, b + ".alt") ? " changed" : ""}" data-path="${b}.alt" value="${esc(it.alt)}" placeholder="image description" title="image description (alt text)"></div>
+        <div class="body">
+          <div class="head">${ed(`${b}.title`, "h2")}${ed(`${b}.role`, "div", "meta")}<span class="field-note" data-count="${b}.role"></span></div>
+          ${ed(`${b}.body`, "p", "", true)}<span class="field-note" data-count="${b}.body"></span>
+          <div>${ed(`${b}.link.label`, "span", "go")}
+            <input class="href${it.link.href !== get(ORIGINAL.pages, b + ".link.href") ? " changed" : ""}" data-path="${b}.link.href" value="${esc(it.link.href)}" placeholder="link url (leave empty for no link)"></div>
+        </div>
+      </li>`;
+    }).join("")}</ul>
+    <footer><span>email</span><span>home</span></footer>`;
+  document.querySelectorAll("[data-count]").forEach(updateCount);
+  status();
+}
+
+function updateCount(note) {
+  const path = note.dataset.count, v = get(data.pages, path) || "", len = plainLen(v);
+  const max = path.endsWith(".body") ? BODY_SOFT_MAX : path.endsWith(".role") ? ROLE_SOFT_MAX : 160;
+  note.textContent = `${len} / ~${max} characters`;
+  note.classList.toggle("over", len > max);
+}
+
+function commit(el) {
+  const path = el.dataset.path;
+  const v = el.tagName === "INPUT" ? el.value.trim() : el.dataset.rich ? cleanRich(el.innerHTML) : el.textContent.replace(/\s+/g, " ").trim();
+  set(data.pages, path, v);
+  el.classList.toggle("changed", v !== get(ORIGINAL.pages, path));
+  const note = document.querySelector(`[data-count="${path}"]`); if (note) updateCount(note);
+  save();
+}
+
+document.addEventListener("input", (e) => { if (e.target.dataset && e.target.dataset.path) commit(e.target); });
+document.addEventListener("keydown", (e) => {
+  const el = e.target;
+  if (el.isContentEditable && e.key === "Enter") { e.preventDefault(); el.blur(); }
+  if (el.isContentEditable && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "i") {
+    e.preventDefault(); if (el.dataset.rich) { document.execCommand("italic"); commit(el); } else toast("italics work in the intro line and body text");
+  }
+  if (el.isContentEditable && (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "b") e.preventDefault();
+});
+document.addEventListener("paste", (e) => {
+  const el = e.target.closest && e.target.closest("[contenteditable]"); if (!el) return;
+  e.preventDefault(); document.execCommand("insertText", false, (e.clipboardData || window.clipboardData).getData("text/plain").replace(/\s+/g, " "));
+});
+document.addEventListener("focusout", (e) => { if (e.target.dataset && e.target.dataset.rich) { e.target.innerHTML = get(data.pages, e.target.dataset.path); } });
+document.addEventListener("click", (e) => { const a = e.target.closest("a[data-page]"); if (a) { current = a.dataset.page; render(); window.scrollTo(0, 0); } });
+
+const json = () => JSON.stringify(data, null, 2);
+$("#export").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([json()], { type: "application/json" }));
+  a.download = "rodikirk-content.json"; a.click(); toast("downloaded rodikirk-content.json");
+};
+$("#copy").onclick = async () => { try { await navigator.clipboard.writeText(json()); toast("json copied"); } catch (e) { toast("couldn't copy: use export"); } };
+$("#import").onclick = () => $("#file").click();
+$("#file").onchange = async (e) => {
+  const f = e.target.files[0]; if (!f) return;
+  try { const d = JSON.parse(await f.text()); if (!d.pages) throw 0; data = d; save(); render(); toast("imported"); } catch (err) { toast("that file isn't a content export"); }
+  e.target.value = "";
+};
+$("#reset").onclick = () => { if (!confirm("Discard all edits and go back to the current site copy?")) return; data = JSON.parse(JSON.stringify(ORIGINAL)); localStorage.removeItem(KEY); render(); toast("reset"); };
+$("#preview").onclick = () => { const on = document.body.classList.toggle("preview"); $("#preview").textContent = on ? "edit" : "preview";
+  document.querySelectorAll("[contenteditable]").forEach((el) => el.setAttribute("contenteditable", on ? "false" : "true")); };
+
+if (countChanges()) toast("restored your saved edits");
+render();
+</script>
+</body>
+</html>

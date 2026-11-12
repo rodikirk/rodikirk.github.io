@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "pages": {
+    "music": {
+      "title": "Music · Rodi Kirk",
+      "description": "Rodi Kirk's music: the duo with pianist Aron Ottignon, the Again remix on DJ-Kicks, and the score for the Sundance documentary Tickled.",
+      "lede": "records, remixes, and films, made with collaborators around the world",
+      "items": [
+        {
+          "thumb": "aron.jpg",
+          "alt": "Still from the Funkhaus live session with Aron Ottignon",
+          "title": "Aron Ottignon, Sam Dubois, Rodi Kirk",
+          "role": "piano · steel pan · electronics",
+          "body": "Aron builds motifs at the piano while I shape them live with real-time sampling, granular synthesis and custom code. As a trio we recorded an LP for <em>Blue Note</em>, as well as many improv performances.",
+          "link": {
+            "label": "watch the Funkhaus session →",
+            "href": "https://www.youtube.com/watch?v=X1xkRXHVi8M"
+          }
+        },
+        {
+          "thumb": "again.jpg",
+          "alt": "Cover of the Motor City Drum Ensemble DJ-Kicks compilation",
+          "title": "Again (remix)",
+          "role": "Electric Wire Hustle · DJ-Kicks",
+          "body": "My rework of <em>Again</em> by Electric Wire Hustle, picked up by Motor City Drum Ensemble for his <em>DJ-Kicks</em> compilation.",
+          "link": {
+            "label": "hear it →",
+            "href": "https://daniloplessow.bandcamp.com/track/again-scratch-22-remix"
+          }
+        },
+        {
+          "thumb": "tickled.jpg",
+          "alt": "Theatrical poster for the documentary Tickled",
+          "title": "Tickled (original score)",
+          "role": "film score · Sundance 2016",
+          "body": "Music for the documentary. Part of a run of film scoring and placement work on HBO, Magnolia Pictures and Netflix.",
+          "link": {
+            "label": "trailer →",
+            "href": "https://www.youtube.com/watch?v=iOBXuCYB4jQ"
+          }
+        }
+      ]
+    },
+    "education": {
+      "title": "Education · Rodi Kirk",
+      "description": "Rodi Kirk on music education: Director of Music & Education at Melodics, essays for Ableton on practice, and teaching at dBs Music Berlin. Active learning.",
+      "lede": "learning by doing",
+      "items": [
+        {
+          "thumb": "melodics.jpg",
+          "alt": "Playing along to a Melodics lesson with a MIDI keyboard and laptop",
+          "title": "Melodics",
+          "role": "Director of Music & Education",
+          "body": "The app that makes practice fun and habit, teaching drums, keys, and pads. I lead the content and learning side: from music licensing and production, to how practice feels, and how people actually get better.",
+          "link": {
+            "label": "melodics.com →",
+            "href": "https://melodics.com"
+          }
+        },
+        {
+          "thumb": "writing.jpg",
+          "alt": "Artwork from Ableton's The Science of Practice article",
+          "title": "Writing on practice",
+          "role": "essays · Ableton",
+          "body": "On repetition, flow, and the art of deliberate practice.",
+          "link": {
+            "label": "the science of practice →",
+            "href": "https://www.ableton.com/en/blog/science-practice-new-ways-develop-your-musical-skills/"
+          }
+        },
+        {
+          "thumb": "teaching.jpg",
+          "alt": "Rodi Kirk performing at a laptop beside a grand piano",
+          "title": "Teaching & curriculum",
+          "role": "programme lead · dBs Music Berlin",
+          "body": "Academic work in music technology and creative production.",
+          "link": {
+            "label": "read the interview →",
+            "href": "https://catalyst-berlin.com/stories/rodi-kirk"
+          }
+        }
+      ]
+    },
+    "design": {
+      "title": "Design · Rodi Kirk",
+      "description": "Rodi Kirk's design work: tides, a web artwork of the tide in Auckland; Small music machines, browser music games; and keys, a playable homepage.",
+      "lede": "tools, sketches, and ideas",
+      "items": [
+        {
+          "thumb": "tides.jpg",
+          "alt": "Tides: a soft blue-to-green gradient showing the tide at Cheltenham Beach",
+          "title": "tides",
+          "role": "web · generative sound · live data",
+          "body": "A small web artwork so I know when it's time for a swim.",
+          "link": {
+            "label": "see the tide now →",
+            "href": "https://tides-five.vercel.app/"
+          }
+        },
+        {
+          "thumb": "machines.jpg",
+          "alt": "Screenshot of Small music machines",
+          "title": "Small music machines",
+          "role": "web · browser games",
+          "body": "Pocket-sized music games that run in the browser. Daily seeded puzzles on a tiny shared engine.",
+          "link": {
+            "label": "play →",
+            "href": "https://music-games.rodi-kirk.workers.dev"
+          }
+        },
+        {
+          "thumb": "keys.jpg",
+          "alt": "Flat coloured shapes from the keys sketch",
+          "title": "keys",
+          "role": "web · p5.js",
+          "body": "Every key is a sound and a shape, and mashing the keyboard writes my bio. One of the variants of this homepage.",
+          "link": {
+            "label": "play →",
+            "href": "../keys.html"
+          }
+        }
+      ]
+    }
+  }
+}

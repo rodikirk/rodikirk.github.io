@@ -1,36 +1,32 @@
 # rodikirk.com
 
-Personal site for Rodi Kirk. Plain static HTML + CSS, no build step.
-Served by GitHub Pages at the domain root (`CNAME` → www.rodikirk.com).
-`.nojekyll` disables Jekyll so files serve as-is.
+Personal site for Rodi Kirk. Static HTML, CSS and JS (p5.js + Web Audio), no build step for the pages themselves. Served by GitHub Pages from `master` (`CNAME` → www.rodikirk.com). `.nojekyll` makes files serve as-is.
 
 ## Structure
 
 ```
-index.html        the home page (intro, work, watch & listen, sketches)
-style.css         the shared stylesheet — home + all project pages
-_template/        starter for a project subpage (not a live route)
-<slug>/index.html each project lives here → rodikirk.com/<slug>/
-CNAME             custom domain
+index.html            home: "strings". Name + music / education / design ride four tuned strings
+strings.js            home interaction (real HTML links positioned on the strings)
+common.js             shared palette, Web Audio voices, the rolling "set" bar, bio header
+style.css             home + sketch styles (bump ?v= in the html when changing it)
+keys.html / .js       homepage variant: every key is a sound + shape and inks the bio
+bounce.html / .js     homepage variant: throw the ball, hits land on 16ths and print the bio
+sketches.html         "more sketches" list (record, orbits, bounce v1 in _archive/v1)
+music/ education/ design/   sub pages, generated from content.json
+sub.css               sub page styles
+assets/thumbs/        square thumbnails for the sub pages
 ```
 
-## Add a project page
+## Edit the sub pages
 
-```sh
-cp -r _template my-project          # pick a url slug
-# edit my-project/index.html — title, meta, summary, prose, images
-git add my-project && git commit -m "Add my-project" && git push
-# live at https://rodikirk.com/my-project/
-```
+1. Open `editor.html` (locally or at rodikirk.com/editor.html), click text to edit, then **export json**.
+2. Save the export over `content.json`.
+3. `python3 _build_subpages.py` rebuilds `music/`, `education/`, `design/` and `content.js`.
+4. Commit and push.
 
-## Add a sketch
-
-Drop a new `<li class="sketch">` at the **top** of the `.feed` list in `index.html`,
-then commit & push.
-
-## Edit / publish
+## Publish
 
 ```sh
 python3 -m http.server 8000   # preview at localhost:8000
-git push                      # push to master → Pages auto-deploys (~30–60s)
+git push                      # push to master → Pages deploys (~30–60s)
 ```
