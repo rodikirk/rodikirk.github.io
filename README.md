@@ -9,9 +9,10 @@ index.html            home: "strings". Name + music / education / design ride fo
 strings.js            home interaction (real HTML links positioned on the strings)
 common.js             shared palette, Web Audio voices, the rolling "set" bar, bio header
 style.css             home + sketch styles (bump ?v= in the html when changing it)
+rings.html / .js      homepage variant: flick a ring, its ball plays the letters, locked to a bar
 keys.html / .js       homepage variant: every key is a sound + shape and inks the bio
 bounce.html / .js     homepage variant: throw the ball, hits land on 16ths and print the bio
-sketches.html         "more sketches" list (record, orbits, bounce v1 in _archive/v1)
+sketches.html         "more sketches" list (record, bounce v1 in _archive/v1)
 music/ education/ design/   sub pages, generated from content.json
 sub.css               sub page styles
 assets/thumbs/        square thumbnails for the sub pages

@@ -6,7 +6,7 @@ const BASE = () => (33.333 / 60) * Math.PI * 2 / 60; // rad per frame at 33 rpm,
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  chrome("record");
+  chrome("record", { hint: null });
   textFont("IBM Plex Mono"); textSize(TS); textAlign(CENTER, CENTER);
   for (const c of BIO) { const w = textWidth(c); widths.push(w); total += w; }
   R = total / TWO_PI;
